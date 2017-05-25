@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:outputLabel value="exemplo utilizando o atributo event com o evento padrão: "/>
+            <h:inputText value="#{alunoMB.matricula}">
+                <f:ajax/>
+            </h:inputText>
+            <!--
+            A requisição AJAX será acionada sempre que o conteúdo do inputText for modificado
+            (evento default é onchange) - Só ocorrerá a requisição após teclar Enter no campo
+            -->
+        </h:form>
+        <br/><br/>
+        <h:form>
+            <h:outputLabel value="exemplo utilizando o atributo event com o evento onkeyup: "/>
+            <h:inputText value="#{alunoMB.matricula}">
+                <f:ajax event="keyup"/>
+            </h:inputText>
+            <!--
+            A requisição AJAX só será acionando quando o evento onkeyup for disparado.
+            -->
+        </h:form>
+        <br/><br/>
+        <h:form>
+            <h:commandButton value="Indo para outra página" action="/newjsf">
+                <f:ajax/>
+            </h:commandButton>
+            <!--
+            A ação do commandButton (invocação do action) será executada via AJAX
+            quando o botão for clicado (onclick, que é o evento default)
+            -->
+        </h:form>
+        <br/><br/>
+        <h:form>
+            <f:ajax>
+                <h:outputLabel value="Exemplo de login: "/>
+                Login: <h:inputText /><br/>
+                Password: <h:inputSecret /><br/>
+                <h:commandButton value="OK"/>
+            </f:ajax>
+        </h:form>
+        <br/><br/>
+        <h:form id="formulario">
+            <h:outputLabel value="Utilizando o atributo execute: "/><br/>
+            <h:inputText/><br/>
+            <h:inputSecret/><br/>
+            <h:commandButton value="Enviar">
+                <f:ajax event="click" execute="formulario"/>
+            </h:commandButton>
+        </h:form>
+        <br/><br/>
+        <!--
+        O atributo execute indica quais valores (componentes) serão enviados
+        para processamento via AJAX e pode ter os seguintes valores:
+        - @all: todos os componentes da tela serão enviados;
+        - @none: nenhum componente da tela será enviado;
+        - @this: somente o componente que disparou a requisição AJAX será enviado;
+        - @form: todos os componentes do formulário que contém o componente que disparou a requisição AJAX serão enviados.
+        -->
+        <h:form>
+            <h:outputLabel value="Utilizando o atributo Render (serve para atualizar a página (todo ou parte)):"/><br/>
+            <h:outputLabel value="Primeiro envie o código da matrícula e depois processe-a"/><br/>
+            Matricula: <h:inputText value="#{alunoMB.matricula}"/>
+            <h:commandButton value="Enviar">
+                <f:ajax execute="@form"/>
+            </h:commandButton><br/>
+        </h:form>
+        <h:form>
+            <h:commandButton value="Processar">
+                <f:ajax event="click" render="numero1 numero2"/>
+            </h:commandButton>
+            <h:outputText id="numero1"
+                          value="#{alunoMB.matricula}"/>
+            <br/>
+            <h:outputText id="numero2"
+                          value="#{alunoMB.matricula}"/><br/>
+        <!--
+        O render possui os mesmos valores do atributo execute, a diferença é que ao
+        invés de enviar, o render atualiza.
+        -->
+        </h:form>
+        <br/><br/>
+        <h:form id="formulario2">
+            <h:outputLabel value="Utilizando o atributo listener: "
+            Matricula: <h:inputText value="#{alunoMB.matricula}"/>
+            <h:commandButton value="Salvar">
+                <f:ajax event="click" execute="formulario2"
+                        render ="formulario2"
+                        listener="#{alunoMB.salvar}"/>
+            </h:commandButton>
+                <!--
+                Através do atributo listener, se define qual método responde a uma requisição
+                AJAX. Esse método será executado na fase Invoke Application e deve ser 
+                public void.
+                No código acima é efetuado a chamado do método salva() de AlunoMB, após o evento
+                onclick do botão, quando são enviados todos os dados do formulário para atualização
+                -->
+        </h:form>
+    </h:body>
+</html>
+
